@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wedding Invitation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Amiri:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a0707;--bg2:#2b0b0b;--gold:#d9b46a;--gold2:#f0d28f;--cream:#f1e4cf;--muted:#b9a58a;--line:rgba(217,180,106,.35);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{color-scheme:dark;scroll-behavior:smooth}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(ellipse at top,#3a0d0d 0%,var(--bg) 55%,#0f0303 100%);color:var(--cream);font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;overflow-x:hidden}
+body.locked{overflow:hidden;height:100vh}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:1}
+h1,h2,h3,.cin{font-family:'Cinzel',Georgia,serif;font-weight:400;letter-spacing:.08em;font-variant:small-caps;color:var(--gold)}
+.eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);text-align:center}
+.orn{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px auto 22px;width:min(240px,60%)}
+.orn:before,.orn:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.orn:after{transform:scaleX(-1)}
+.orn i{width:8px;height:8px;border:1px solid var(--gold);transform:rotate(45deg)}
+section{position:relative;z-index:2;padding:90px 22px;max-width:1000px;margin:auto}
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s,transform 1s}
+.rv.in{opacity:1;transform:none}
+
+/* gate */
+#gate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;text-align:center;background:url('red-wedding-assets/wedding-hero.png') center 48%/cover no-repeat,#07110f;transition:visibility 0s 1.8s}
+#gate .door{position:absolute;top:0;bottom:0;width:50%;background:
+ radial-gradient(circle at 50% 50%,rgba(217,180,106,.18),transparent 60%),
+ repeating-linear-gradient(45deg,rgba(217,180,106,.10) 0 2px,transparent 2px 22px),
+ repeating-linear-gradient(-45deg,rgba(217,180,106,.10) 0 2px,transparent 2px 22px),linear-gradient(rgba(7,17,15,.24),rgba(7,17,15,.48));
+ border:2px solid var(--gold);transition:transform 1.8s cubic-bezier(.7,0,.2,1)}
+#gate .l{left:0;border-right:0}#gate .r{right:0;border-left:0}
+#gate.open .l{transform:translateX(-101%)}#gate.open .r{transform:translateX(101%)}
+#gate.open{visibility:hidden}
+#gate .inner{position:relative;z-index:2;padding:20px;transition:opacity .6s}
+#gate.open .inner{opacity:0}
+#gate h1{font-size:clamp(34px,9vw,68px);text-shadow:0 0 30px rgba(240,210,143,.4)}
+.btn{display:inline-block;margin-top:26px;padding:13px 30px;border:1px solid var(--gold);background:linear-gradient(#7a1a1a,#4d0d0d);color:var(--gold2);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.btn:hover{filter:brightness(1.2)}
+.guest-tag{font-style:italic;color:var(--gold2);font-size:20px;margin-top:10px}
+
+/* hero */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;max-width:none;
+ background:linear-gradient(rgba(26,7,7,.38),rgba(26,7,7,.78)),url('red-wedding-assets/wedding-hero.png') center 52%/cover no-repeat}
+#hero h1{font-size:clamp(40px,11vw,96px);line-height:1.1;text-shadow:0 2px 30px rgba(0,0,0,.6)}
+#hero .amp{display:block;font-size:.5em;color:var(--gold2)}
+.ar{font-family:'Amiri',serif;font-size:clamp(26px,6vw,40px);color:var(--gold2);direction:rtl;text-align:center;line-height:1.7}
+.date{margin-top:18px;letter-spacing:.3em;font-family:'Cinzel',serif;font-size:14px;color:var(--gold2)}
+.scroll{margin-top:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.35em;color:var(--muted);animation:bob 2s infinite}
+@keyframes bob{50%{transform:translateY(8px)}}
+
+/* quote */
+#quote{text-align:center}
+#quote p{font-style:italic;font-size:clamp(20px,4vw,26px);line-height:1.7;max-width:640px;margin:0 auto}
+.dear{font-family:'Cinzel',serif;color:var(--gold);font-size:clamp(20px,5vw,30px);margin-bottom:18px;letter-spacing:.1em}
+
+/* couple */
+.couple{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin-top:40px}
+.person{text-align:center;width:min(260px,70vw)}
+.circle{width:100%;aspect-ratio:1;border-radius:50%;border:2px solid var(--gold);background-image:url('red-wedding-assets/couple-portraits.png');background-size:200% 100%;background-position:0% 50%;background-repeat:no-repeat;overflow:hidden;box-shadow:0 0 40px rgba(217,180,106,.2)}
+#bImg{background-position:100% 50%}
+.circle img,.polaroid img{width:100%;height:100%;object-fit:cover;display:block}
+.person h3{margin-top:18px;font-size:24px}
+.person p{color:var(--muted);font-size:17px;margin-top:4px}
+
+/* story */
+.reel-controls{display:flex;justify-content:flex-end;gap:8px;margin:18px 0 -18px}
+.reel-arrow{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:rgba(43,11,11,.8);color:var(--gold2);font:22px/1 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.reel-arrow:hover{border-color:var(--gold);background:#4d0d0d}
+.reel{display:flex;gap:22px;overflow:hidden;padding:30px 6px 20px;margin-top:20px}
+.polaroid{flex:0 0 220px;height:270px;background:#fff;padding:10px 10px 38px;box-shadow:0 10px 30px rgba(0,0,0,.6);transform:rotate(var(--r));transition:transform .4s;position:relative}
+.polaroid:hover{transform:rotate(0) scale(1.05)}
+.polaroid .ph{width:100%;height:100%;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.polaroid span{position:absolute;bottom:9px;left:0;right:0;text-align:center;color:#4a2a1a;font-style:italic;font-size:16px}
+
+/* events */
+.event{display:flex;gap:0;margin:34px 0;border:1px solid var(--line);background:rgba(43,11,11,.6);overflow:hidden}
+.event:nth-child(even){flex-direction:row-reverse}
+.event .pic{flex:1 1 45%;min-height:260px;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;align-items:center;justify-content:center;font-size:64px}
+.event .pic img{width:100%;height:100%;object-fit:cover}
+.event .txt{flex:1 1 55%;padding:34px 30px;display:flex;flex-direction:column;justify-content:center}
+.event h3{font-size:30px;margin:6px 0 14px}
+.event .eyebrow{text-align:left}
+.event dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:18px}
+.event dt{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.25em;color:var(--muted);padding-top:6px;text-transform:uppercase}
+.event em{display:block;margin-top:14px;color:var(--muted);font-size:17px}
+@media(max-width:640px){.event,.event:nth-child(even){flex-direction:column}.event .pic{min-height:180px}}
+
+/* venue */
+.map{margin:10px auto 0;max-width:720px;height:280px;border:1px solid var(--line);position:relative;overflow:hidden;background:
+ linear-gradient(rgba(26,7,7,.12),rgba(26,7,7,.28)),
+ url('red-wedding-assets/venue-hall.jpg') center 50%/cover no-repeat,#2a1212}
+.map .lbl{position:absolute;left:0;right:0;bottom:0;padding:24px 8px 14px;text-align:center;background:linear-gradient(transparent,rgba(26,7,7,.88))}
+.center{text-align:center}
+
+/* rsvp */
+form{max-width:440px;margin:10px auto 0;padding:30px;border:1px solid var(--line);background:rgba(43,11,11,.55);border-radius:6px}
+label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+input,select,textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--cream);font:inherit;padding:8px 2px;outline:none}
+select option{background:#2b0b0b}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+form .btn{width:100%;margin-top:28px}
+.note{font-size:14px;color:var(--muted);text-align:center;margin-top:12px}
+footer{position:relative;z-index:2;text-align:center;padding:50px 20px 70px;color:var(--muted)}
+
+</style>
+</head>
+<body class="locked">
+<canvas id="fx"></canvas>
+
+<div id="gate">
+  <div class="door l"></div><div class="door r"></div>
+  <div class="inner">
+    <div class="eyebrow">You are invited</div>
+    <h1 id="gNames"></h1>
+    <div class="guest-tag" id="gGuest"></div>
+    <button class="btn" id="openBtn">Open Invitation</button>
+  </div>
+</div>
+
+<section id="hero">
+  <div class="ar rv">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا</div>
+  <div class="eyebrow rv" style="margin-top:34px">are getting married</div>
+  <h1 class="rv" style="margin-top:14px"><span id="n1"></span><span class="amp">&amp;</span><span id="n2"></span></h1>
+  <div class="date rv" id="heroDate"></div>
+  <div class="eyebrow rv" style="margin-top:14px" id="hashtag"></div>
+  <div class="scroll">SCROLL ↓</div>
+</section>
+
+<section id="quote" class="center">
+  <div class="ar rv">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+  <div class="orn"><i></i></div>
+  <div class="dear rv" id="dear"></div>
+  <p class="rv" id="quoteTxt"></p>
+</section>
+
+<section id="couple">
+  <div class="eyebrow rv">Our Beloved</div><div class="orn"><i></i></div>
+  <h2 class="center rv" style="font-size:clamp(28px,6vw,44px)">Groom &amp; Bride</h2>
+  <div class="couple">
+    <div class="person rv"><div class="circle" id="gImg"></div><h3 id="gName"></h3><p id="gSub"></p></div>
+    <div class="person rv"><div class="circle" id="bImg"></div><h3 id="bName"></h3><p id="bSub"></p></div>
+  </div>
+</section>
+
+<section id="story">
+  <div class="eyebrow rv">Memories</div><div class="orn"><i></i></div>
+  <h2 class="center rv" style="font-size:clamp(28px,6vw,44px)">Our Story in Frames</h2>
+  <div class="reel-controls rv">
+    <button class="reel-arrow" id="storyPrev" type="button" aria-label="Previous photos">‹</button>
+    <button class="reel-arrow" id="storyNext" type="button" aria-label="Next photos">›</button>
+  </div>
+  <div class="reel rv" id="reel" role="region" aria-label="Wedding memories"></div>
+</section>
+
+<section id="events">
+  <div class="eyebrow rv">Save the dates</div><div class="orn"><i></i></div>
+  <h2 class="center rv" style="font-size:clamp(28px,6vw,44px)">Wedding Events</h2>
+  <div id="evList"></div>
+</section>
+
+<section id="venue" class="center">
+  <div class="eyebrow rv">Find us</div><div class="orn"><i></i></div>
+  <h2 class="rv" style="font-size:clamp(28px,6vw,44px);margin-bottom:26px">Venue &amp; Directions</h2>
+  <div class="map rv"><div class="lbl cin" id="venueName"></div></div>
+  <a class="btn" id="mapBtn" target="_blank" rel="noopener">Open in Google Maps</a>
+</section>
+
+<section id="rsvp">
+  <div class="eyebrow rv">Kindly respond</div><div class="orn"><i></i></div>
+  <h2 class="center rv" style="font-size:clamp(28px,6vw,44px)">Confirm Your Presence</h2>
+  <form class="rv" id="form">
+    <label>Your Full Name</label><input id="fName" required>
+    <label>Number of Guests Attending</label><select id="fCount"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+    <label>Will you attend?</label><select id="fYes"><option>Yes, with joy</option><option>Sorry, cannot attend</option></select>
+    <label>A Warm Message (optional)</label><textarea id="fMsg" rows="2"></textarea>
+    <button class="btn" type="submit">Confirm via WhatsApp</button>
+    <div class="note">Your reply opens in WhatsApp and goes straight to the family.</div>
+  </form>
+</section>
+
+<footer><div class="orn"><i></i></div><div class="cin" id="foot" style="font-size:22px"></div><div style="margin-top:8px;font-style:italic">With blessings from both families</div></footer>
+
+<script>
+/* ============ EDIT YOUR DETAILS HERE ============ */
+var C={
+ groom:"Huzaifa", bride:"Noor",
+ groomFull:"Huzaifa", brideFull:"Noor",
+ groomSub:"The Groom", brideSub:"The Bride",
+ date:"December 20, 2026", hashtag:"#HuzaifaWedsNoor",
+ quote:"“Two souls, one heart. With the blessings of Allah (SWT) and our beloved families, we invite you to share in the joy of our new beginning.”",
+ events:[
+  {t:"Mehndi",d:"Friday, 18 Dec 2026",h:"7:00 PM",v:"Family Residence, Lahore",n:"Colours, music and henna. Come dressed in yellow.",e:"🌼",c1:"#b4542a",c2:"#6d1e3a"},
+  {t:"Nikah",d:"Saturday, 19 Dec 2026",h:"5:00 PM",v:"Faisal Masjid Lawn, Islamabad",n:"The sacred vows. Please join us for the ceremony and dinner.",e:"📖",c1:"#7a5a2a",c2:"#2b0b0b"},
+  {t:"Baraat",d:"Sunday, 20 Dec 2026",h:"8:00 PM",v:"Pearl Continental, Lahore",n:"The grand procession arrives.",e:"🐎",c1:"#7a1a1a",c2:"#1a0707"},
+  {t:"Walima",d:"Monday, 21 Dec 2026",h:"7:30 PM",v:"Pearl Continental, Lahore",n:"A celebration of togetherness.",e:"✨",c1:"#5a2a4a",c2:"#1a0707"}
+ ],
+ venue:"Pearl Continental, Lahore",
+ mapLink:"https://www.google.com/maps/search/?api=1&query=Pearl+Continental+Lahore",
+ whatsapp:"923001234567",              /* RSVP aane wala WhatsApp number (country code ke saath, + ke baghair) */
+ story:[{c:"First Meeting",c1:"#8a4a2a",c2:"#3a1a1a",p:"0% 0%"},{c:"The Proposal",c1:"#7a2a3a",c2:"#2b0b0b",p:"100% 0%"},{c:"Engagement",c1:"#a07a3a",c2:"#4a1a1a",p:"0% 100%"},{c:"Forever Begins",c1:"#6a1a2a",c2:"#1a0707",p:"100% 100%"}]
+};
+/* ================================================= */
+
+var $=function(i){return document.getElementById(i)};
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* Guest name from link path: .../Ali-Khan (also accepts old #Ali-Khan and ?to=Ali Khan links) */
+function pathGuest(){
+  var path=location.pathname||"";
+  if(path.endsWith("/"))return "";
+  var leaf=path.split("/").pop()||"";
+  if(!leaf||/\.[a-z0-9]+$/i.test(leaf)||leaf.toLowerCase()==="index")return "";
+  return leaf;
+}
+function guest(){
+  var params=new URLSearchParams(location.search);
+  var raw=params.get("to")||params.get("name"),alreadyDecoded=!!raw;
+  if(!raw){raw=(location.hash||"").replace(/^#/,"");alreadyDecoded=false}
+  if(!raw){raw=pathGuest();alreadyDecoded=false}
+  if(!alreadyDecoded){try{raw=decodeURIComponent(raw)}catch(e){}}
+  return raw.replace(/[-_]+/g," ").replace(/\s+/g," ").trim().slice(0,40);
+}
+function applyGuest(){
+  var g=guest(), name=esc(g);
+  $('gGuest').innerHTML=g?"Dear "+name:"";
+  $('dear').innerHTML=g?"Dear "+name:"Dear Guest";
+  $('fName').value=g;
+  document.title=g?(C.groom+" & "+C.bride+" — Invitation for "+g):(C.groom+" & "+C.bride+" — Wedding Invitation");
+}
+window.addEventListener('hashchange',applyGuest);
+window.addEventListener('popstate',applyGuest);
+
+/* fill content */
+$('gNames').innerHTML=C.groom+" &amp; "+C.bride;
+$('n1').textContent=C.groom;$('n2').textContent=C.bride;
+$('heroDate').textContent=C.date.toUpperCase();$('hashtag').textContent=C.hashtag;
+$('quoteTxt').textContent=C.quote;
+$('gName').textContent=C.groomFull;$('bName').textContent=C.brideFull;
+$('gSub').textContent=C.groomSub;$('bSub').textContent=C.brideSub;
+$('venueName').textContent=C.venue;$('mapBtn').href=C.mapLink;
+$('foot').textContent=C.groom+" & "+C.bride;
+var reel=$('reel');
+reel.innerHTML=C.story.map(function(s,i){return '<div class="polaroid" style="--r:'+[-4,3,-2,4][i%4]+'deg"><div class="ph" style="--c1:'+s.c1+';--c2:'+s.c2+';background-image:url(\'red-wedding-assets/story-moments.png\');background-size:200% 200%;background-position:'+s.p+'"></div><span>'+s.c+'</span></div>'}).join("");
+Array.prototype.slice.call(reel.children).forEach(function(card){var copy=card.cloneNode(true);copy.setAttribute('aria-hidden','true');reel.appendChild(copy)});
+function moveStory(direction){
+  var loopWidth=reel.scrollWidth/2, step=reel.clientWidth*.72;
+  reel.scrollLeft=(reel.scrollLeft+direction*step+loopWidth)%loopWidth;
+}
+$('storyPrev').onclick=function(){moveStory(-1)};
+$('storyNext').onclick=function(){moveStory(1)};
+if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  var lastStoryFrame=0;
+  function slideStory(now){
+    if(lastStoryFrame)reel.scrollLeft=(reel.scrollLeft+(now-lastStoryFrame)*.025)%(reel.scrollWidth/2);
+    lastStoryFrame=now;
+    requestAnimationFrame(slideStory);
+  }
+  requestAnimationFrame(slideStory);
+}
+$('evList').innerHTML=C.events.map(function(e,i){return '<div class="event rv"><div class="pic" role="img" aria-label="'+e.t+'" style="--c1:'+e.c1+';--c2:'+e.c2+';background-image:url(\'red-wedding-assets/event-moments.png\');background-size:200% 200%;background-position:'+['0% 0%','100% 0%','0% 100%','100% 100%'][i%4]+'"></div><div class="txt"><div class="eyebrow">Event '+(i+1)+'</div><h3>'+e.t+'</h3><dl><dt>Date</dt><dd>'+e.d+'</dd><dt>Time</dt><dd>'+e.h+'</dd><dt>Venue</dt><dd>'+e.v+'</dd></dl><em>'+e.n+'</em></div></div>'}).join("");
+applyGuest();
+
+/* gate */
+$('openBtn').onclick=function(){$('gate').classList.add('open');document.body.classList.remove('locked');setTimeout(reveal,300)};
+
+/* scroll reveal */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+function reveal(){document.querySelectorAll('.rv').forEach(function(el){io.observe(el)})}
+
+/* gold particles */
+(function(){
+  var cv=$('fx'),x=cv.getContext('2d'),P=[],W,H;
+  function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener('resize',rs);
+  for(var i=0;i<45;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+.6,v:Math.random()*.4+.15,a:Math.random()*.6+.2,pk:Math.random()<.25});
+  (function f(){x.clearRect(0,0,W,H);P.forEach(function(p){p.y-=p.v;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}
+    x.beginPath();x.arc(p.x,p.y,p.r,0,6.3);x.fillStyle=p.pk?'rgba(230,90,110,'+p.a+')':'rgba(240,210,143,'+p.a+')';x.fill()});requestAnimationFrame(f)})();
+})();
+
+/* RSVP → WhatsApp */
+$('form').onsubmit=function(ev){ev.preventDefault();
+  var t="Assalam-o-Alaikum! RSVP for "+C.groom+" & "+C.bride+"'s wedding%0AName: "+encodeURIComponent($('fName').value)+"%0AAttending: "+encodeURIComponent($('fYes').value)+"%0AGuests: "+$('fCount').value+(($('fMsg').value)?"%0AMessage: "+encodeURIComponent($('fMsg').value):"");
+  window.open("https://wa.me/"+C.whatsapp+"?text="+t,"_blank");
+};
+
+</script>
+</body>
+</html>
